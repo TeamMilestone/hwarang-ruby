@@ -1,0 +1,15 @@
+[package]
+name = "hwarang-ruby"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+publish = false
+
+[lib]
+name = "hwarang"
+crate-type = ["cdylib"]
+
+[dependencies]
+magnus = "0.8"
+hwarang_core = { package = "hwarang", version = "0.1.0", default-features = false }
+rayon = "1"

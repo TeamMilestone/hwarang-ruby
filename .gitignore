@@ -1,0 +1,22 @@
+# Rust
+/target/
+ext/hwarang/target/
+
+# Ruby
+*.gem
+*.bundle
+tmp/
+pkg/
+Gemfile.lock
+
+# Native extension build artifacts
+lib/hwarang/hwarang.bundle
+lib/hwarang/hwarang.so
+
+# Test fixtures (binary files)
+test/fixtures/*.hwp
+test/fixtures/*.hwpx
+test/fixtures/*.tmp
+
+# OS
+.DS_Store
