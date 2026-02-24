@@ -5,21 +5,13 @@ on:
     tags: ["v*"]
 
 jobs:
-  native-gems:
+  native-gems-linux:
     name: Build native gem (${{ matrix.platform }})
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - os: ubuntu-latest
-            platform: x86_64-linux
-          - os: ubuntu-latest
-            platform: aarch64-linux
-          - os: macos-13
-            platform: x86_64-darwin
-          - os: macos-14
-            platform: arm64-darwin
+        platform: [x86_64-linux, aarch64-linux]
     steps:
       - uses: actions/checkout@v4
 
@@ -38,6 +30,37 @@ jobs:
         with:
           platform: ${{ matrix.platform }}
           ruby-versions: "3.1,3.2,3.3,3.4"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: gem-${{ matrix.platform }}
+          path: pkg/*-${{ matrix.platform }}.gem
+
+  native-gems-macos:
+    name: Build native gem (${{ matrix.platform }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: macos-14
+            platform: arm64-darwin
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.3"
+          bundler-cache: true
+
+      - uses: oxidize-rb/actions/setup-ruby-and-rust@v1
+        with:
+          ruby-version: "3.3"
+          bundler-cache: false
+          cargo-cache: true
+
+      - name: Build native gem
+        run: bundle exec rake native:${{ matrix.platform }} gem
 
       - uses: actions/upload-artifact@v4
         with:
@@ -63,7 +86,7 @@ jobs:
 
   publish:
     name: Publish to RubyGems
-    needs: [native-gems, source-gem]
+    needs: [native-gems-linux, native-gems-macos, source-gem]
     runs-on: ubuntu-latest
     permissions:
       id-token: write
