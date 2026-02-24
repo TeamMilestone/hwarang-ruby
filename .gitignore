@@ -13,9 +13,7 @@ Gemfile.lock
 lib/hwarang/hwarang.bundle
 lib/hwarang/hwarang.so
 
-# Test fixtures (binary files)
-test/fixtures/*.hwp
-test/fixtures/*.hwpx
+# Test fixtures (temp files only)
 test/fixtures/*.tmp
 
 # OS
